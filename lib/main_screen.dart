@@ -39,12 +39,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  void deleteGroup() {
-    setState(() {
-      groupBox.deleteAt(0);
-    });
-  }
-
   void openTask(int index) {
     Navigator.push(
       context,
@@ -54,7 +48,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tasks = box.values.toList();
     return SafeArea(
       child: Container(
         decoration: const BoxDecoration(
@@ -119,7 +112,10 @@ class _MainScreenState extends State<MainScreen> {
                             ),
                           ),
                           IconButton(
-                            onPressed: deleteGroup,
+                            onPressed: () {
+                              box.deleteAt(i);
+                              setState(() {});
+                            },
                             icon: Icon(Icons.delete),
                           ),
                         ],

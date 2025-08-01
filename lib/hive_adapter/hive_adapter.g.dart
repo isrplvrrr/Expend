@@ -16,15 +16,23 @@ class TasksAdapter extends TypeAdapter<Tasks> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Tasks(value: fields[0] as String?, notes: []);
+    return Tasks(
+      value: fields[0] as String?,
+      total: fields[2] as int?,
+      notes: (fields[1] as List?)?.cast<String>(),
+    );
   }
 
   @override
   void write(BinaryWriter writer, Tasks obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.value);
+      ..write(obj.value)
+      ..writeByte(1)
+      ..write(obj.notes)
+      ..writeByte(2)
+      ..write(obj.total);
   }
 
   @override
@@ -48,7 +56,9 @@ class ListsAdapter extends TypeAdapter<Lists> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Lists(list: (fields[0] as List).cast<String>());
+    return Lists(
+      list: (fields[0] as List).cast<dynamic>(),
+    );
   }
 
   @override
@@ -80,7 +90,9 @@ class SaveDBAdapter extends TypeAdapter<SaveDB> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return SaveDB(tasks: fields[0] as Tasks);
+    return SaveDB(
+      tasks: fields[0] as Tasks,
+    );
   }
 
   @override
