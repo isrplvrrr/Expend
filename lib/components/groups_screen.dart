@@ -1,4 +1,3 @@
-import 'package:expend/database/database.dart';
 import 'package:expend/hive_adapter/hive_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -13,7 +12,6 @@ class GroupsScreen extends StatefulWidget {
 
 class _GroupsScreenState extends State<GroupsScreen> {
   late Box<Tasks> groupBox;
-  late List<String> items = [];
   late Tasks task;
   final TextEditingController controller = TextEditingController();
 
@@ -26,7 +24,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
 
   int get _total {
     int sum = 0;
-    for (var text in items) {
+    for (var text in task.notes) {
       final match = RegExp(r'\d+').firstMatch(text);
       if (match != null) {
         sum += int.parse(match.group(0)!);
@@ -39,10 +37,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
     final text = controller.text.trim();
     if (text.isNotEmpty) {
       setState(() {
-        items.add(text);
-        list.add(Lists(list: [text]));
         task.notes.add(text);
-        task.save();
         controller.clear();
       });
     }
@@ -128,7 +123,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                     ),
                   ),
                 ),
-                Text('Сумма: ;${_total}'),
+                Text('Сумма: ${_total}'),
               ],
             ),
           ),

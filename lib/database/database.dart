@@ -3,4 +3,4 @@ import 'package:expend/hive_names/hive_names.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 var box = Hive.box<Tasks>(HiveBoxes.tasks);
-var list = Hive.box<Lists>(HiveBoxes.lists);
+var lists = Hive.box<Lists>(HiveBoxes.lists);

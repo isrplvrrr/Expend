@@ -9,10 +9,10 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(TasksAdapter());
   await Hive.openBox<Tasks>(HiveBoxes.tasks);
-
   Hive.registerAdapter(ListsAdapter());
   await Hive.openBox<Lists>(HiveBoxes.lists);
   print('${box.isOpen}');
+  print(lists.isEmpty);
   runApp(const MyApp());
 }
 
