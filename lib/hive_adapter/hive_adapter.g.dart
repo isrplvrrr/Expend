@@ -18,7 +18,7 @@ class TasksAdapter extends TypeAdapter<Tasks> {
     };
     return Tasks(
       value: fields[0] as String?,
-      total: fields[2] as int?,
+      total: fields[2] as double?,
       notes: (fields[1] as List?)?.cast<String>(),
     );
   }

@@ -13,6 +13,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  final groupsScreen = GroupsScreen(groupIndex: DateTime.april);
   late Box<Tasks> groupBox;
   final TextEditingController controller = TextEditingController();
   bool isVisible = false;
@@ -61,6 +62,17 @@ class _MainScreenState extends State<MainScreen> {
         },
       );
     }
+  }
+
+  double calculateTotal(Tasks task) {
+    double sum = 0;
+    for (var text in task.notes) {
+      final match = RegExp(r'\d+').firstMatch(text);
+      if (match != null) {
+        sum += double.parse(match.group(0)!);
+      }
+    }
+    return sum;
   }
 
   void openTask(int index) {
@@ -141,7 +153,9 @@ class _MainScreenState extends State<MainScreen> {
                               children: [
                                 for (int i = 0; i < groupBox.length; i++)
                                   GestureDetector(
-                                    onTap: () => openTask(i),
+                                    onTap: () {
+                                      openTask(i);
+                                    },
                                     child: Column(
                                       children: [
                                         ClipRRect(
@@ -157,6 +171,9 @@ class _MainScreenState extends State<MainScreen> {
                                                 Text(
                                                   '${groupBox.getAt(i)!.value}',
                                                   textAlign: TextAlign.center,
+                                                ),
+                                                Text(
+                                                  '${groupBox.getAt(index)!.total}',
                                                 ),
                                               ],
                                             ),

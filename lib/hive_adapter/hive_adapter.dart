@@ -10,7 +10,7 @@ class Tasks extends HiveObject {
   List<String> notes;
 
   @HiveField(2)
-  int? total;
+  double? total;
 
   Tasks({this.value, this.total, List<String>? notes})
     : this.notes = notes ?? [];

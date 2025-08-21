@@ -37,6 +37,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
     final text = controller.text.trim();
     if (text.isNotEmpty) {
       setState(() {
+        task.total = _total;
         task.notes.add(text);
         controller.clear();
       });
