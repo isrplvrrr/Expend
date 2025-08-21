@@ -29,3 +29,18 @@ class SaveDB extends HiveObject {
   Tasks tasks;
   SaveDB({required this.tasks});
 }
+
+@HiveType(typeId: 3)
+class Receipt extends HiveObject {
+  @HiveField(0)
+  String? value;
+
+  @HiveField(1)
+  List<String> adds;
+
+  @HiveField(2)
+  int? total;
+
+  Receipt({this.value, this.total, List<String>? adds})
+    : this.adds = adds ?? [];
+}

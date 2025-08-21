@@ -4,3 +4,4 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 var box = Hive.box<Tasks>(HiveBoxes.tasks);
 var lists = Hive.box<Lists>(HiveBoxes.lists);
+var receipt = Hive.box<Receipt>(HiveBoxes.receipt);

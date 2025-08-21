@@ -44,8 +44,18 @@ class _GroupsScreenState extends State<GroupsScreen> {
       await ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Для того ,что бы удалить нажмите на текст'),
-          duration: Duration(seconds: 2),
+          duration: Duration(seconds: 1),
         ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Напишите расходы'),
+            backgroundColor: Colors.green,
+          );
+        },
       );
     }
   }
@@ -63,7 +73,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF004D00),
+      backgroundColor: Color(0xFF004400),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Row(
@@ -131,10 +141,43 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                 style: TextStyle(color: Colors.white),
                               ),
                               onPressed: () {
-                                if (groupBox.isNotEmpty) {
-                                  task.notes.removeAt(index);
-                                  setState(() {});
-                                }
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Column(
+                                        children: [
+                                          Text('Вы точно хотите удалить?'),
+                                          Row(
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  if (groupBox.isNotEmpty) {
+                                                    task.notes.removeAt(index);
+                                                    Navigator.of(context).pop();
+                                                    setState(() {});
+                                                  }
+                                                },
+                                                child: Text('Да'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text('Нет'),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      backgroundColor: Colors.green,
+                                    );
+                                  },
+                                );
+                                // if (groupBox.isNotEmpty) {
+                                //   task.notes.removeAt(index);
+                                setState(() {});
+                                // }
                               },
                             ),
                           ),
@@ -153,7 +196,14 @@ class _GroupsScreenState extends State<GroupsScreen> {
                 height: 70,
                 width: 140,
                 child: Center(
-                  child: Text('${_total}', style: TextStyle(fontSize: 17)),
+                  child: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 800),
+                    child: Text(
+                      '${_total}',
+                      key: ValueKey(_total),
+                      style: TextStyle(fontSize: 17),
+                    ),
+                  ),
                 ),
               ),
             ],
