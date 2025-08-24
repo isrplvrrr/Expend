@@ -114,33 +114,32 @@ class SaveDBAdapter extends TypeAdapter<SaveDB> {
           typeId == other.typeId;
 }
 
-class ReceiptAdapter extends TypeAdapter<Receipt> {
+class IncomAdapter extends TypeAdapter<Incom> {
   @override
   final int typeId = 3;
 
   @override
-  Receipt read(BinaryReader reader) {
+  Incom read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Receipt(
-      value: fields[0] as String?,
-      total: fields[2] as int?,
+    return Incom(
+      name: fields[0] as String?,
       adds: (fields[1] as List?)?.cast<String>(),
-    );
+    )..tatal = fields[2] as double?;
   }
 
   @override
-  void write(BinaryWriter writer, Receipt obj) {
+  void write(BinaryWriter writer, Incom obj) {
     writer
       ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.value)
+      ..write(obj.name)
       ..writeByte(1)
       ..write(obj.adds)
       ..writeByte(2)
-      ..write(obj.total);
+      ..write(obj.tatal);
   }
 
   @override
@@ -149,7 +148,7 @@ class ReceiptAdapter extends TypeAdapter<Receipt> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ReceiptAdapter &&
+      other is IncomAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

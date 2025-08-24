@@ -31,16 +31,15 @@ class SaveDB extends HiveObject {
 }
 
 @HiveType(typeId: 3)
-class Receipt extends HiveObject {
+class Incom extends HiveObject {
   @HiveField(0)
-  String? value;
+  String? name;
 
   @HiveField(1)
   List<String> adds;
 
   @HiveField(2)
-  int? total;
+  double? tatal;
 
-  Receipt({this.value, this.total, List<String>? adds})
-    : this.adds = adds ?? [];
+  Incom({this.name, List<String>? adds}) : this.adds = adds ?? [];
 }

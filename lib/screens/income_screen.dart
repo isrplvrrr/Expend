@@ -2,24 +2,24 @@ import 'package:expend/hive_adapter/hive_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class GroupsScreen extends StatefulWidget {
-  final int groupIndex;
-  const GroupsScreen({super.key, required this.groupIndex});
+class IncomeScreen extends StatefulWidget {
+  final int incomeIndex;
+  const IncomeScreen({super.key, required this.incomeIndex});
 
   @override
-  State<GroupsScreen> createState() => _GroupsScreenState();
+  State<IncomeScreen> createState() => _IncomeScreenState();
 }
 
-class _GroupsScreenState extends State<GroupsScreen> {
-  late Box<Tasks> groupBox;
-  late Tasks task;
+class _IncomeScreenState extends State<IncomeScreen> {
+  late Box<Incom> groupBox;
+  late Incom incom;
   final TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    groupBox = Hive.box<Tasks>('tasks');
-    task = groupBox.getAt(widget.groupIndex)!;
+    groupBox = Hive.box<Incom>('incom');
+    incom = groupBox.getAt(widget.incomeIndex)!;
     setState(() {});
   }
 
@@ -27,15 +27,15 @@ class _GroupsScreenState extends State<GroupsScreen> {
     final text = controller.text.trim();
     if (text.isNotEmpty) {
       setState(() {
-        task.notes.add(text);
+        incom.adds.add(text);
         final match = RegExp(r'\d+').firstMatch(text);
         if (match != null) {
           final num = double.parse(match.group(0)!);
-          task.total = (task.total ?? 0.0) + num;
+          incom.tatal = (incom.tatal ?? 0.0) + num;
         }
         controller.clear();
       });
-      await task.save();
+      await incom.save();
       await ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Для того ,что бы удалить нажмите на текст'),
@@ -56,17 +56,18 @@ class _GroupsScreenState extends State<GroupsScreen> {
   }
 
   void deleteNotesAt(int index) async {
-    final text = task.notes[index];
+    final text = incom.adds[index];
     final match = RegExp(r'\d+').firstMatch(text);
     if (match != null) {
       final num = double.parse(match.group(0)!);
-      task.total = (task.total ?? 0.0) - num;
+      incom.tatal = (incom.tatal ?? 0.0) - num;
     }
     setState(() {
-      task.notes.removeAt(index);
+      incom.adds.removeAt(index);
     });
-    await task.save();
+    await incom.save();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +83,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
               },
               icon: Icon(Icons.arrow_back, color: Colors.white),
             ),
-            Text('${task.value}', style: TextStyle(color: Colors.white)),
+            Text('${incom.name}', style: TextStyle(color: Colors.white)),
             Padding(padding: EdgeInsets.symmetric(horizontal: 40)),
           ],
         ),
@@ -131,12 +132,12 @@ class _GroupsScreenState extends State<GroupsScreen> {
                       ),
                       Expanded(
                         child: ListView.builder(
-                          itemCount: task.notes.length,
+                          itemCount: incom.adds.length,
                           itemBuilder: (_, index) {
                             return ListTile(
                               title: TextButton(
                                 child: Text(
-                                  '${task.notes[index]}',
+                                  '${incom.adds[index]}',
                                   style: TextStyle(color: Colors.white),
                                 ),
                                 onPressed: () {
@@ -153,7 +154,9 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                                   onPressed: () {
                                                     setState(() {});
                                                     if (groupBox.isNotEmpty) {
-                                                      deleteNotesAt(index);
+                                                      incom.adds.removeAt(
+                                                        index,
+                                                      );
                                                       Navigator.of(
                                                         context,
                                                       ).pop();
@@ -198,7 +201,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                   child: AnimatedSwitcher(
                     duration: Duration(milliseconds: 800),
                     child: Text(
-                      '${task.total ?? 0.0}',
+                      '${incom.tatal ?? 0.0}',
                       style: TextStyle(fontSize: 17),
                     ),
                   ),

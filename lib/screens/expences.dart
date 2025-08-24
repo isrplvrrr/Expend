@@ -1,9 +1,10 @@
-import 'package:expend/screens/groups_screen.dart';
-import 'package:expend/database/database.dart';
 import 'package:expend/hive_adapter/hive_adapter.dart';
+import 'package:expend/screens/groups_screen.dart';
+import 'package:expend/screens/income.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:page_transition/page_transition.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -13,13 +14,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final groupsScreen = GroupsScreen(groupIndex: DateTime.april);
   late Box<Tasks> groupBox;
   final TextEditingController controller = TextEditingController();
   bool isVisible = false;
   @override
   void initState() {
     groupBox = Hive.box<Tasks>('tasks');
+
     super.initState();
   }
 
@@ -64,17 +65,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  double calculateTotal(Tasks task) {
-    double sum = 0;
-    for (var text in task.notes) {
-      final match = RegExp(r'\d+').firstMatch(text);
-      if (match != null) {
-        sum += double.parse(match.group(0)!);
-      }
-    }
-    return sum;
-  }
-
   void openTask(int index) {
     Navigator.of(context)
         .push(
@@ -104,30 +94,36 @@ class _MainScreenState extends State<MainScreen> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             actions: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topRight,
-                    end: Alignment.centerRight,
-                    colors: [Colors.black, Colors.green],
-                  ),
-                ),
-              ),
+              
             ],
             backgroundColor: Colors.transparent,
             toolbarHeight: 100,
-            title: Row(
+            title: Column(
               children: [
-                Text(
-                  'Расходы',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+                Row(
+                  children: [
+                    Text(
+                      'Расходы',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                    IconButton(
+                      onPressed: () {Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    child: Income(),
                   ),
+                );
+              },
+                      icon: Icon(Icons.arrow_forward_ios_sharp,color: Colors.white,),
+                    ),
+                  ],
                 ),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                Icon(Icons.arrow_forward_ios_sharp, color: Colors.white),
               ],
             ),
           ),
@@ -140,10 +136,11 @@ class _MainScreenState extends State<MainScreen> {
                       color: Colors.transparent,
                       height: 495,
                       width: 400,
-                      child: ListView.builder(
-                        itemCount: 1,
-                        itemBuilder: (context, index) {
-                          return Padding(
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          Padding(
                             padding: EdgeInsetsGeometry.symmetric(
                               horizontal: 55,
                             ),
@@ -173,7 +170,7 @@ class _MainScreenState extends State<MainScreen> {
                                                   textAlign: TextAlign.center,
                                                 ),
                                                 Text(
-                                                  '${groupBox.getAt(index)!.total}',
+                                                  '${groupBox.getAt(i)!.total ?? 0.0}',
                                                 ),
                                               ],
                                             ),
@@ -196,7 +193,10 @@ class _MainScreenState extends State<MainScreen> {
                                                             onPressed: () {
                                                               if (groupBox
                                                                   .isNotEmpty) {
-                                                                box.deleteAt(i);
+                                                                groupBox
+                                                                    .deleteAt(
+                                                                      i,
+                                                                    );
                                                                 setState(() {});
                                                                 Navigator.of(
                                                                   context,
@@ -269,65 +269,66 @@ class _MainScreenState extends State<MainScreen> {
                                 ),
                               ],
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(padding: EdgeInsetsGeometry.symmetric(vertical: 40)),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Column(
-                            children: [
-                              TextButton(
-                                onPressed: () {},
-                                child: SvgPicture.asset(
-                                  'assets/icons/home.svg',
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 140),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: SvgPicture.asset(
-                              'assets/icons/settings.svg',
-                              color: Colors.black,
-                            ),
                           ),
                         ],
                       ),
                     ),
                   ],
                 ),
-                // Padding(padding: EdgeInsets.symmetric(vertical: 15)),
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(30),
-                //   child: Container(
-                //     height: 85,
-                //     width: 370,
-                //     color: Colors.lightGreen,
-                //     child: Row(
-                //       children: [
-                //         IconButton(
-                //           onPressed: () {},
-                //           icon: Icon(Icons.settings_outlined),
-                //         ),
-                //         TextButton(
-                //           onPressed: () {},
-                //           child: Text('Поступления'),
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
+
+                Padding(padding: EdgeInsets.symmetric(vertical: 75)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(30),
+                        child: Container(
+                          height: 85,
+                          width: 370,
+                          color: Colors.transparent,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  height: 50,
+                                  width: 5,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    style: ButtonStyle(
+                                      overlayColor: WidgetStatePropertyAll(
+                                        Colors.transparent,
+                                      ),
+                                    ),
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/home.svg',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: SizedBox(
+                                  height: 70,
+                                  width: 10,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    style: ButtonStyle(
+                                      overlayColor: WidgetStatePropertyAll(
+                                        Colors.transparent,
+                                      ),
+                                    ),
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/settings.svg',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
